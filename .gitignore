@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+
+# Environment & local secrets
+.env
+.env.*
+!.env.example
+
+# Starfleet runtime state (future)
+.starfleet/
+
+# Logs & coverage
+*.log
+coverage/
+
+# OS / editor
+.DS_Store
+Thumbs.db

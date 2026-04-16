@@ -1,0 +1,5 @@
+# Manifesto mínimo do lab Starfleet (MVP).
+# Copie para starfleet.yaml e ajuste o nome do cluster.
+apiVersion: starfleet/v1
+cluster:
+  name: my-lab

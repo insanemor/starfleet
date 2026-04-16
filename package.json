@@ -1,0 +1,50 @@
+{
+  "name": "starfleet",
+  "version": "1.0.0",
+  "description": "Starfleet CLI scaffold for local DevOps/SRE labs.",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "pretest": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=24 <27"
+  },
+  "type": "module",
+  "bin": {
+    "starfleet": "./bin/run.js"
+  },
+  "oclif": {
+    "bin": "starfleet",
+    "commands": "./dist/commands",
+    "devPlugins": [
+      "."
+    ],
+    "dirname": "starfleet",
+    "plugins": [
+      "@oclif/plugin-autocomplete"
+    ],
+    "topicSeparator": " "
+  },
+  "dependencies": {
+    "@oclif/core": "^4.10.5",
+    "@oclif/plugin-autocomplete": "^3.2.45",
+    "yaml": "^2.8.3",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "execa": "^9.6.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.4"
+  }
+}

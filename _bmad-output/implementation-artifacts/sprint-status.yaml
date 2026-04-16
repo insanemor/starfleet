@@ -1,0 +1,98 @@
+# generated: 2026-04-16T00:00:00Z
+# last_updated: 2026-04-16T00:00:00Z
+# project: starfleet
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: /home/ins/GIT/starfleet/_bmad-output/implementation-artifacts
+#
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-04-16T00:00:00Z
+last_updated: 2026-04-16T20:35:00Z
+project: starfleet
+project_key: NOKEY
+tracking_system: file-system
+story_location: /home/ins/GIT/starfleet/_bmad-output/implementation-artifacts
+
+development_status:
+  epic-1: done
+  1-1-scaffolding-oclif-e-esqueleto-dos-comandos-mvp: done
+  1-2-carregar-e-validar-starfleet-yaml-na-fronteira-da-cli: done
+  1-3-modelo-de-erro-starfleeterror-exit-codes-e-renderizacao-humana: done
+  1-4-modo-de-saida-humano-e-output-json-com-envelope-estavel: done
+  1-5-modo-nao-interativo-e-comportamento-deterministico: done
+  1-6-completions-zsh-para-comandos-e-argumentos-mvp: done
+  epic-1-retrospective: optional
+
+  epic-2: backlog
+  2-1-runner-k3d-encapsulado-no-src-core-cluster: backlog
+  2-2-comando-up-criar-ou-convergir-cluster-de-forma-idempotente: backlog
+  2-3-comando-down-remover-cluster-e-limpar-estado-operacional: backlog
+  2-4-comando-status-visao-de-infra-e-modulos-ativos: backlog
+  2-5-recuperacao-basica-pos-falha-de-up-reexecucao-segura: backlog
+  epic-2-retrospective: optional
+
+  epic-3: backlog
+  3-1-catalogo-de-modulos-a-partir-de-modules-module-yaml: backlog
+  3-2-resolver-dependencias-de-modulos-de-forma-deterministica: backlog
+  3-3-comando-add-modulo-aplicar-iac-e-gravar-pinagem-no-estado: backlog
+  3-4-remover-ou-desativar-modulo-apos-validacao: backlog
+  3-5-gate-de-qualidade-minima-antes-de-promover-entrada-de-catalogo: backlog
+  3-6-atualizar-modulo-instalado-de-forma-isolada-mvp-limitado: backlog
+  3-7-perfis-de-modulos-em-starfleet-yaml: backlog
+  epic-3-retrospective: optional
+
+  epic-4: backlog
+  4-1-runner-de-smoke-tests-por-modulo-pods-servicos-up: backlog
+  4-2-testes-de-integracao-fluxo-app-metricas-dashboards: backlog
+  4-3-fluxo-de-validacao-assistida-por-ui-roteiro-extensao-para-agente: backlog
+  4-4-confirmacao-explicita-de-validacao-pelo-utilizador: backlog
+  4-5-checklist-manual-de-fallback: backlog
+  4-6-comando-validate-e-revalidacao-pos-mudancas: backlog
+  epic-4-retrospective: optional
+
+  epic-5: backlog
+  5-1-taxonomia-de-falhas-para-operacoes-de-cluster-e-modulos: backlog
+  5-2-selecao-de-rota-de-recuperacao-retry-rollback-diagnostico: backlog
+  5-3-orquestracao-do-fluxo-de-recuperacao-ate-estado-consistente: backlog
+  5-4-confirmacao-pos-recuperacao-com-validacao-renovada: backlog
+  epic-5-retrospective: optional
+
+  epic-6: backlog
+  6-1-formato-minimo-de-manifesto-de-evidencia-e-escrita-em-disco: backlog
+  6-2-relatorio-legivel-markdown-derivado-do-manifesto: backlog
+  6-3-rastreabilidade-de-evidencia-a-versao-da-cli-e-do-estado: backlog
+  epic-6-retrospective: optional
+
+  epic-7: backlog
+  7-1-scaffold-checklist-para-novo-modulo-alinhado-ao-padrao-starfleet: backlog
+  7-2-verificacoes-de-compatibilidade-e-regressao-em-contribuicoes: backlog
+  7-3-criterios-de-aceitacao-automaticos-para-rejeitar-contribuicoes-invalidas: backlog
+  epic-7-retrospective: optional
