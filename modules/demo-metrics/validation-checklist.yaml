@@ -1,0 +1,6 @@
+apiVersion: starfleet/checklist/v1
+items:
+  - id: open-ui
+    text: Abrir a UI do módulo (ex. Grafana) e confirmar página inicial sem erro HTTP 5xx.
+  - id: trace-flow
+    text: Verificar que existe pelo menos um datapoint ou painel com dados (não vazio).

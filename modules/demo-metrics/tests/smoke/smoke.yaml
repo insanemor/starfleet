@@ -1,0 +1,8 @@
+apiVersion: starfleet/smoke/v1
+checks:
+  - name: noop-local
+    run: "true"
+  # Exemplo para labs com kubeconfig válido:
+  # - name: kube-system-pods
+  #   run: "kubectl get pods -n kube-system --request-timeout=10s >/dev/null"
+  #   timeoutMs: 15000

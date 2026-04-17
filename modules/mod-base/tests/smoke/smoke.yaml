@@ -1,0 +1,4 @@
+apiVersion: starfleet/smoke/v1
+checks:
+  - name: noop
+    run: "true"
