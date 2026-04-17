@@ -7,6 +7,7 @@ import {afterEach, describe, expect, it} from 'vitest'
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const devBin = path.join(projectRoot, 'bin/dev.js')
+const mockK3d = path.join(projectRoot, 'test/fixtures/mock-k3d.sh')
 
 const runCli = (env: NodeJS.ProcessEnv, ...args: string[]) =>
   execa(devBin, args, {
@@ -62,6 +63,7 @@ describe('starfleet.yaml na fronteira da CLI', () => {
 
   it('aceita manifesto mínimo válido', async () => {
     const configPath = mkLabFile('starfleet.yaml')
+    fs.chmodSync(mockK3d, 0o755)
     fs.writeFileSync(
       configPath,
       `apiVersion: starfleet/v1
@@ -70,9 +72,19 @@ cluster:
 `,
       'utf8',
     )
-    const result = await runCli({STARFLEET_CONFIG: configPath}, 'up')
+    const labRoot = path.dirname(configPath)
+    const result = await execa(devBin, ['up'], {
+      cwd: projectRoot,
+      reject: false,
+      env: {
+        ...process.env,
+        STARFLEET_CONFIG: configPath,
+        STARFLEET_K3D_BIN: mockK3d,
+        STARFLEET_WORKDIR: labRoot,
+      },
+    })
     expect(result.exitCode).toBe(0)
-    expect(result.stdout).toContain('Command scaffold ready: up')
+    expect(result.stdout).toMatch(/Cluster criado|\.starfleet/)
   })
 
   it('list não exige starfleet.yaml', async () => {
@@ -84,7 +96,8 @@ cluster:
       env,
     })
     expect(result.exitCode).toBe(0)
-    expect(result.stdout).toContain('Command scaffold ready: list')
+    expect(result.stdout).toContain('Catálogo de módulos')
+    expect(result.stdout).toContain('demo-metrics')
   })
 
   it('respeita STARFLEET_CONFIG com caminho absoluto', async () => {
@@ -99,6 +112,7 @@ cluster:
     )
     const result = await runCli({STARFLEET_CONFIG: configPath}, 'status')
     expect(result.exitCode).toBe(0)
-    expect(result.stdout).toContain('Command scaffold ready: status')
+    expect(result.stdout).toContain('Lab (manifesto):')
+    expect(result.stdout).toContain('k3d (ferramenta):')
   })
 })

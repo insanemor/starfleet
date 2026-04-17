@@ -12,7 +12,7 @@ storiesStatus: ready_for_development
 workflowStatus: complete
 validatedAt: '2026-04-16'
 validationSummary:
-  storyCount: 34
+  storyCount: 35
   frCoverage: FR1-FR38 mapeados no inventário e cobertos pelos épicos 1-7
   starterTemplateCheck: Story 1.1 alinha com o starter oclif (TypeScript) da Arquitetura
   uxDrCoverage: UX-DR1-DR3 referenciados nas histórias 1.1, 1.3, 2.2 e fluxos de erro/recuperação
@@ -365,6 +365,23 @@ So that recupero o ambiente quando possível (FR5, NFR7).
 **When** executo `starfleet up` novamente
 **Then** o plano de execução reconcilia ou recria componentes de forma documentada (sem estado “meio aplicado” silencioso)
 **And** logs mostram transição de estágios e resultado final (sucesso ou falha classificada)
+
+### Story 2.6: Preflight do `up` — validar porta e conflitos antes de criar cluster
+
+As a utilizador,
+I want que `starfleet up` detete cedo se a porta da API ou o ambiente impedem criar o cluster,
+So that não perco tempo com rollback do k3d nem mensagens opacas de Docker (FR4, FR20, FR29, NFR4).
+
+**Acceptance Criteria:**
+
+**Given** é necessário criar um cluster novo (caminho `cluster create`)
+**When** a porta de host configurada para a API Kubernetes (`kubeApiPort` / default) já está ocupada ou o ambiente é incompatível conforme política definida na implementação
+**Then** o comando falha **antes** de invocar `k3d cluster create`, com `StarfleetError` classificado, `hint` acionável (ex.: libertar porta, alterar `kubeApiPort`, remover cluster antigo) e log de estágio explícito (ex.: `up: stage=preflight`)
+**And** modo humano e `--output json` seguem o envelope do Épico 1
+**Given** o cluster já existe e o fluxo é apenas convergência / no-op
+**Then** o preflight não altera o comportamento actual de convergência
+
+_Rastreabilidade: proposta detalhada em `_bmad-output/github-issue-up-preflight-validation.md`._
 
 ## Epic 3: Catálogo, dependências e ciclo de vida de módulos
 

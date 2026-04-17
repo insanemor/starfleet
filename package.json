@@ -10,7 +10,8 @@
     "build": "npm run clean && tsc -p tsconfig.json",
     "pretest": "npm run build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "catalog:check": "node bin/dev.js catalog-check"
   },
   "keywords": [],
   "author": "",

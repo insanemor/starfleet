@@ -11,10 +11,3 @@ cluster:
   # Opcional — limites de memória aceites pelo k3d (ex.: 512mb).
   # serversMemory: 512mb
   # agentsMemory: 256mb
-
-# Opcional — perfis para starfleet up --profile <nome>
-# profiles:
-#   lab:
-#     modules:
-#       - mod-base
-#       - demo-metrics

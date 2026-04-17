@@ -1,4 +1,4 @@
-import {Command} from '@oclif/core'
+import {Command, Flags} from '@oclif/core'
 import {handleCoreError} from '../core/cliAdapter.js'
 import {runUp} from '../core/commandHandlers.js'
 import type {OutputMode} from '../core/output/jsonEnvelope.js'
@@ -8,6 +8,11 @@ import {starfleetCliFlags} from '../core/starfleetCliFlags.js'
 export default class Up extends Command {
   static override flags = {
     ...starfleetCliFlags,
+    profile: Flags.string({
+      char: 'P',
+      description:
+        'Após criar/convergir o cluster, aplica os módulos listados em profiles.<nome> no starfleet.yaml.',
+    }),
   }
   static override description = 'Initialize or reconcile the local Starfleet lab.'
   static override examples = [
@@ -18,13 +23,17 @@ export default class Up extends Command {
     const {flags} = await this.parse(Up)
     const output = flags.output as OutputMode
     try {
-      const result = await runUp()
+      const result = await runUp({profile: flags.profile})
       writeCliOutput({
         cmd: this,
         output,
         command: 'up',
         humanLine: result.message,
-        data: {message: result.message},
+        data: {
+          message: result.message,
+          ...(result.upAction !== undefined ? {action: result.upAction} : {}),
+          ...(result.profileApplyData ?? {}),
+        },
       })
     } catch (error) {
       handleCoreError(this, error, {verbose: flags.verbose, output, command: 'up'})

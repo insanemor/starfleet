@@ -1,2 +1,1 @@
-/** Placeholder: logger estruturado (Epic 1 / NFRs). */
-export {}
+export {logInfo} from './logger.js'

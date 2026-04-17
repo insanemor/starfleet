@@ -1,2 +1,12 @@
-/** Placeholder: k3d / cluster lifecycle (Epic 2). */
-export {}
+export {createLabCluster} from './createCluster.js'
+export {convergeClusterUp} from './convergeUp.js'
+export type {UpConvergeResult} from './convergeUp.js'
+export {tearDownLabCluster} from './tearDown.js'
+export type {DownTearResult} from './tearDown.js'
+export {collectLabStatus} from './labStatus.js'
+export type {LabStatusSnapshot} from './labStatus.js'
+export {buildK3dClusterCreateArgs} from './k3dArgs.js'
+export {K3dRunner} from './k3dRunner.js'
+export type {K3dClusterSpec} from './k3dTypes.js'
+export {mapConfigToK3dSpec} from './k3dTypes.js'
+export {assertHostTcpPortAvailable} from './preflightHostPort.js'

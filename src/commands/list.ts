@@ -24,7 +24,10 @@ export default class List extends Command {
         output,
         command: 'list',
         humanLine: result.message,
-        data: {message: result.message},
+        data: {
+          message: result.message,
+          ...(result.listData ?? {}),
+        },
       })
     } catch (error) {
       handleCoreError(this, error, {verbose: flags.verbose, output, command: 'list'})

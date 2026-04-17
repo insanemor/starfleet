@@ -16,13 +16,37 @@ npm install
 ./bin/dev.js add observability-core
 ```
 
+Variáveis úteis (testes / automação):
+
+- `STARFLEET_WORKDIR` — diretório onde gravar `.starfleet/` e resolver paths relativos (por omissão é o diretório de trabalho atual).
+- `STARFLEET_K3D_BIN` — caminho alternativo ao binário `k3d` (ex.: mock em testes).
+- `STARFLEET_MODULE_HOOKS_DRY_RUN` — se `1` / `true`, não executa comandos dos hooks `install`/`uninstall` (útil em CI).
+
 ## Comandos MVP
 
-- `up`
+- `up` (opções: `--profile <nome>` para aplicar `profiles.<nome>.modules` após o cluster)
 - `down`
 - `status`
 - `list`
-- `add <module>`
+- `add <module>` (opção `--upgrade` para reexecutar hooks e atualizar pinagem)
+- `remove <module>`
+- `catalog-check` — gate para módulos com `promoted: true` (exige `README.md` e `tests/smoke` no diretório do módulo)
+
+Script npm: `npm run catalog:check` (equivale a `catalog-check`).
+
+`list` lê pastas `modules/<nome>/` no diretório de trabalho (`STARFLEET_WORKDIR` ou cwd), carrega `module.yaml` com `apiVersion: starfleet/module/v1` e mostra nome, descrição, dependências e versão sugerida. Entradas inválidas (YAML/schema ou `module.yaml` em falta) aparecem na lista marcadas como **inválido**, com mensagem e dica — não são omitidas silenciosamente.
+
+`add` resolve dependências (ordem topológica estável), executa `hooks.install` no diretório do módulo e grava `modules.active` + `modules.pinned` em `.starfleet/state.json`. Requer cluster já criado (`starfleet up`). `remove` executa `hooks.uninstall` e bloqueia se outro módulo ativo declarar dependência sobre o alvo.
+
+Perfis: em `starfleet.yaml`, secção opcional `profiles.<nome>.modules: [...]`; `starfleet up --profile <nome>` aplica esses módulos após o cluster (mesma resolução de dependências).
+
+`status` mostra um resumo legível do lab (nome no manifesto, fase em `.starfleet/state.json`, presença do cluster no k3d, versão da ferramenta k3d, módulos ativos quando existirem no estado) e sugere `starfleet up` quando não há cluster. Com `--output json`, o mesmo conteúdo aparece no campo `data` do envelope estável (ver secção abaixo), incluindo `message` e campos estruturados (`summary`, `clusterName`, etc.).
+
+`up` pode voltar a ser executado com segurança após uma falha: o estado em `.starfleet/state.json` regista `failed` com o último erro; uma nova execução regista nos logs o estágio `recover` (retry) ou reconcilia o cluster já existente com o manifesto. Em JSON, o campo `action` pode ser `recovered` quando a operação conclui após estado prévio de falha.
+
+Antes de criar um cluster novo, o `up` corre um **preflight** (`up: stage=preflight` nos logs): verifica se a porta da API no host (`cluster.kubeApiPort` ou predefinida) está disponível para bind; se estiver ocupada, falha com código `CLUSTER_PORT_UNAVAILABLE` sem invocar `k3d cluster create`. Os ramos em que o cluster já existe (convergência / no-op) não passam por este passo.
+
+`down` remove o cluster k3d com o nome do manifesto (se existir) e marca o estado em `.starfleet/state.json` como `removed`. Se o cluster já não existir, o comando termina com sucesso (no-op) e o estado é atualizado na mesma.
 
 ## Saída JSON (`--output json` / `-o json`)
 
@@ -60,7 +84,7 @@ O Starfleet inclui o plugin oficial **`@oclif/plugin-autocomplete`**. Com o proj
 
 Se o binário `starfleet` estiver no `PATH` (instalação global ou `npm link`), substitua `./bin/dev.js` por `starfleet`.
 
-Após configurar o shell, o Tab completa os comandos MVP (`up`, `down`, `status`, `list`, `add`) e o meta-comando `autocomplete`, bem como flags partilhadas (`--output`, `--verbose`, `--yes`, …). O primeiro uso pode demorar um instante enquanto o cache é construído.
+Após configurar o shell, o Tab completa os comandos MVP (`up`, `down`, `status`, `list`, `add`, `remove`, `catalog-check`) e o meta-comando `autocomplete`, bem como flags partilhadas (`--output`, `--verbose`, `--yes`, …). O primeiro uso pode demorar um instante enquanto o cache é construído.
 
 ## Qualidade
 

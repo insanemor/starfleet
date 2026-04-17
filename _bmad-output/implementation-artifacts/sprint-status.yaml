@@ -1,5 +1,5 @@
 # generated: 2026-04-16T00:00:00Z
-# last_updated: 2026-04-16T00:00:00Z
+# last_updated: 2026-04-16T23:00:00Z
 # project: starfleet
 # project_key: NOKEY
 # tracking_system: file-system
@@ -34,8 +34,8 @@
 # - Developer typically creates next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
-generated: 2026-04-16T00:00:00Z
-last_updated: 2026-04-16T20:35:00Z
+generated: 2026-04-16T23:00:00Z
+last_updated: 2026-04-16T23:00:00Z
 project: starfleet
 project_key: NOKEY
 tracking_system: file-system
@@ -51,22 +51,23 @@ development_status:
   1-6-completions-zsh-para-comandos-e-argumentos-mvp: done
   epic-1-retrospective: optional
 
-  epic-2: backlog
-  2-1-runner-k3d-encapsulado-no-src-core-cluster: backlog
-  2-2-comando-up-criar-ou-convergir-cluster-de-forma-idempotente: backlog
-  2-3-comando-down-remover-cluster-e-limpar-estado-operacional: backlog
-  2-4-comando-status-visao-de-infra-e-modulos-ativos: backlog
-  2-5-recuperacao-basica-pos-falha-de-up-reexecucao-segura: backlog
+  epic-2: done
+  2-1-runner-k3d-encapsulado-no-src-core-cluster: done
+  2-2-comando-up-criar-ou-convergir-cluster-de-forma-idempotente: done
+  2-3-comando-down-remover-cluster-e-limpar-estado-operacional: done
+  2-4-comando-status-visao-de-infra-e-modulos-ativos: done
+  2-5-recuperacao-basica-pos-falha-de-up-reexecucao-segura: done
+  2-6-preflight-do-up-validar-porta-e-conflitos-antes-de-criar-cluster: done
   epic-2-retrospective: optional
 
-  epic-3: backlog
-  3-1-catalogo-de-modulos-a-partir-de-modules-module-yaml: backlog
-  3-2-resolver-dependencias-de-modulos-de-forma-deterministica: backlog
-  3-3-comando-add-modulo-aplicar-iac-e-gravar-pinagem-no-estado: backlog
-  3-4-remover-ou-desativar-modulo-apos-validacao: backlog
-  3-5-gate-de-qualidade-minima-antes-de-promover-entrada-de-catalogo: backlog
-  3-6-atualizar-modulo-instalado-de-forma-isolada-mvp-limitado: backlog
-  3-7-perfis-de-modulos-em-starfleet-yaml: backlog
+  epic-3: done
+  3-1-catalogo-de-modulos-a-partir-de-modules-module-yaml: done
+  3-2-resolver-dependencias-de-modulos-de-forma-deterministica: done
+  3-3-comando-add-modulo-aplicar-iac-e-gravar-pinagem-no-estado: done
+  3-4-remover-ou-desativar-modulo-apos-validacao: done
+  3-5-gate-de-qualidade-minima-antes-de-promover-entrada-de-catalogo: done
+  3-6-atualizar-modulo-instalado-de-forma-isolada-mvp-limitado: done
+  3-7-perfis-de-modulos-em-starfleet-yaml: done
   epic-3-retrospective: optional
 
   epic-4: backlog

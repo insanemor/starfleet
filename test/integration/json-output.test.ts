@@ -28,7 +28,10 @@ describe('--output json', () => {
     expect(parsed.ok).toBe(true)
     expect(parsed.command).toBe('list')
     expect(parsed.error).toBeNull()
-    expect(parsed.data).toEqual({message: expect.any(String)})
+    const data = parsed.data as Record<string, unknown>
+    expect(typeof data.message).toBe('string')
+    expect(data.catalogRoot).toBe('modules')
+    expect(Array.isArray(data.modules)).toBe(true)
     expect(typeof parsed.timestamp).toBe('string')
     expect(parsed.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T/)
   })

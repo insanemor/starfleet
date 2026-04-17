@@ -1,4 +1,4 @@
-import {Args, Command} from '@oclif/core'
+import {Args, Command, Flags} from '@oclif/core'
 import {handleCoreError} from '../core/cliAdapter.js'
 import {runAdd} from '../core/commandHandlers.js'
 import {ExitCode} from '../core/errors/exitCodes.js'
@@ -14,6 +14,10 @@ export default class Add extends Command {
   }
   static override flags = {
     ...starfleetCliFlags,
+    upgrade: Flags.boolean({
+      description: 'Reexecuta hooks install e atualiza pinagem para a versão actual do catálogo.',
+      default: false,
+    }),
   }
   static override description = 'Add a module into the active Starfleet lab.'
   static override examples = [
@@ -34,15 +38,21 @@ export default class Add extends Command {
           exitCode: ExitCode.usage,
         })
       }
-      const result = await runAdd()
+      const result = await runAdd({
+        module: rawModule ?? '',
+        upgrade: flags.upgrade,
+      })
       const moduleName = rawModule ?? 'module-not-specified'
-      const humanLine = `${result.message} (${moduleName})`
       writeCliOutput({
         cmd: this,
         output,
         command: 'add',
-        humanLine,
-        data: {message: result.message, module: moduleName},
+        humanLine: result.message,
+        data: {
+          message: result.message,
+          module: moduleName,
+          ...(result.addData ?? {}),
+        },
       })
     } catch (error) {
       handleCoreError(this, error, {verbose: flags.verbose, output, command: 'add'})

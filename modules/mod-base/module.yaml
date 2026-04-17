@@ -1,0 +1,7 @@
+apiVersion: starfleet/module/v1
+name: mod-base
+description: Camada base mínima para encadear dependências no catálogo Starfleet.
+version: 0.0.1
+hooks:
+  install:
+    - ':'

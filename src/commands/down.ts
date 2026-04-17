@@ -24,7 +24,10 @@ export default class Down extends Command {
         output,
         command: 'down',
         humanLine: result.message,
-        data: {message: result.message},
+        data: {
+          message: result.message,
+          ...(result.downAction !== undefined ? {action: result.downAction} : {}),
+        },
       })
     } catch (error) {
       handleCoreError(this, error, {verbose: flags.verbose, output, command: 'down'})

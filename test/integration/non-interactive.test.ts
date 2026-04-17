@@ -55,11 +55,52 @@ cluster:
   })
 
   it('add com MODULE em modo não interativo continua a funcionar', async () => {
-    const configPath = mkValidConfigPath()
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'starfleet-ni-'))
+    dirs.push(dir)
+    const configPath = path.join(dir, 'starfleet.yaml')
+    fs.writeFileSync(
+      configPath,
+      `apiVersion: starfleet/v1
+cluster:
+  name: ni-test
+`,
+      'utf8',
+    )
+    fs.mkdirSync(path.join(dir, 'modules', 'mod-x'), {recursive: true})
+    fs.writeFileSync(
+      path.join(dir, 'modules', 'mod-x', 'module.yaml'),
+      `apiVersion: starfleet/module/v1
+description: test ni
+version: 1.0.0
+hooks:
+  install:
+    - ':'
+`,
+      'utf8',
+    )
+    fs.mkdirSync(path.join(dir, '.starfleet'), {recursive: true})
+    fs.writeFileSync(
+      path.join(dir, '.starfleet', 'state.json'),
+      JSON.stringify({
+        schemaVersion: 1,
+        cluster: {
+          name: 'ni-test',
+          specFingerprint: 'testfp',
+          lastPhase: 'ready',
+        },
+        updatedAt: new Date().toISOString(),
+      }),
+      'utf8',
+    )
     const result = await execa(devBin, ['add', '--yes', 'mod-x'], {
       cwd: projectRoot,
       reject: false,
-      env: {...process.env, STARFLEET_CONFIG: configPath},
+      env: {
+        ...process.env,
+        STARFLEET_CONFIG: configPath,
+        STARFLEET_WORKDIR: dir,
+        STARFLEET_MODULE_HOOKS_DRY_RUN: '1',
+      },
     })
     expect(result.exitCode).toBe(0)
     expect(result.stdout).toContain('mod-x')

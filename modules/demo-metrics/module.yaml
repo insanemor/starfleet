@@ -1,0 +1,9 @@
+apiVersion: starfleet/module/v1
+name: demo-metrics
+description: Módulo de demonstração do catálogo Starfleet (hooks opcionais; depende de mod-base).
+version: 0.1.0
+dependencies:
+  - mod-base
+hooks:
+  install:
+    - ':'

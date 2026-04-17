@@ -24,7 +24,10 @@ export default class Status extends Command {
         output,
         command: 'status',
         humanLine: result.message,
-        data: {message: result.message},
+        data: {
+          message: result.message,
+          ...(result.statusData ?? {}),
+        },
       })
     } catch (error) {
       handleCoreError(this, error, {verbose: flags.verbose, output, command: 'status'})
