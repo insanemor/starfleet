@@ -21,6 +21,12 @@ export function readState(cwd: string): StarfleetStateFileV1 | null {
         delete parsed.modules.pinned
       }
     }
+    if (parsed.validation !== undefined) {
+      const v = parsed.validation
+      if (typeof v !== 'object' || v === null || Array.isArray(v)) {
+        delete (parsed as {validation?: unknown}).validation
+      }
+    }
     return parsed
   } catch {
     return null
@@ -28,6 +34,11 @@ export function readState(cwd: string): StarfleetStateFileV1 | null {
 }
 
 export function writeState(cwd: string, state: StarfleetStateFileV1): void {
+  const previous = readState(cwd)
+  const next: StarfleetStateFileV1 =
+    state.recovery === undefined && previous?.recovery !== undefined
+      ? {...state, recovery: previous.recovery}
+      : state
   fs.mkdirSync(starfleetDir(cwd), {recursive: true})
-  fs.writeFileSync(stateFilePath(cwd), `${JSON.stringify(state, null, 2)}\n`, 'utf8')
+  fs.writeFileSync(stateFilePath(cwd), `${JSON.stringify(next, null, 2)}\n`, 'utf8')
 }

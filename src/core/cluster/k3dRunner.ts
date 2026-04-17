@@ -1,6 +1,7 @@
 import {execFile} from 'node:child_process'
 import {promisify} from 'node:util'
 import {ExitCode} from '../errors/exitCodes.js'
+import {classifyExternalFailure} from '../errors/failureTaxonomy.js'
 import {StarfleetError} from '../errors/StarfleetError.js'
 import {logInfo} from '../logging/logger.js'
 import {buildK3dClusterCreateArgs} from './k3dArgs.js'
@@ -57,12 +58,26 @@ export class K3dRunner {
       try {
         parsed = JSON.parse(stdout)
       } catch (e) {
+        const classification = classifyExternalFailure({
+          surface: 'k3d',
+          command: `${bin} cluster list -o json`,
+          message: `invalid json: ${String(e)}`,
+          stdout,
+        })
         throw new StarfleetError({
-          code: 'CLUSTER_K3D_FAILED',
+          code: classification.code === 'EXTERNAL_COMMAND_FAILED' ? 'EXTERNAL_CONFIG' : classification.code,
           message: 'Resposta inválida de k3d cluster list (JSON).',
-          hint: 'Verifique a versão do k3d e o PATH.',
+          hint:
+            classification.code === 'EXTERNAL_COMMAND_FAILED'
+              ? 'k3d retornou JSON inválido. Verifique versão/compatibilidade da ferramenta.'
+              : classification.hint,
           exitCode: ExitCode.cluster,
-          details: {cause: String(e)},
+          details: {
+            cause: String(e),
+            surface: 'k3d',
+            category: 'config',
+            command: bin,
+          },
         })
       }
       if (!Array.isArray(parsed)) {
@@ -124,24 +139,34 @@ function mapK3dExecError(
     stderr?: Buffer | string
     stdout?: Buffer | string
     status?: number
+    signal?: string
+    killed?: boolean
     code?: string | number
   }
   const stderr = e.stderr !== undefined ? String(e.stderr) : ''
   const stdout = e.stdout !== undefined ? String(e.stdout) : ''
-  const hint =
-    e.code === 'ENOENT'
-      ? 'Instale o k3d e confirme que o executável está no PATH, ou defina um runner de testes com executable explícito.'
-      : 'Confirme que o Docker está em execução, que a porta API não colide com outro cluster e que o nome do cluster é único.'
+  const classification = classifyExternalFailure({
+    surface: 'k3d',
+    command: bin,
+    errno: e.code,
+    signal: e.signal,
+    timedOut: e.killed === true,
+    message: e.message,
+    stderr,
+    stdout,
+  })
 
   return new StarfleetError({
-    code: 'CLUSTER_K3D_FAILED',
+    code: classification.code,
     message:
-      e.code === 'ENOENT'
+      classification.category === 'binary-missing'
         ? `Executável não encontrado: ${bin}`
         : `k3d falhou em ${operation}: ${e.message ?? String(raw)}`.trim(),
-    hint,
+    hint: classification.hint,
     exitCode: ExitCode.cluster,
     details: {
+      surface: classification.surface,
+      category: classification.category,
       command: bin,
       args,
       errno: e.code,

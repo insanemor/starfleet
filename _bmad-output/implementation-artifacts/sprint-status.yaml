@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-16T23:00:00Z
-last_updated: 2026-04-16T23:00:00Z
+last_updated: 2026-04-17T12:29:02Z
 project: starfleet
 project_key: NOKEY
 tracking_system: file-system
@@ -70,20 +70,20 @@ development_status:
   3-7-perfis-de-modulos-em-starfleet-yaml: done
   epic-3-retrospective: optional
 
-  epic-4: backlog
-  4-1-runner-de-smoke-tests-por-modulo-pods-servicos-up: backlog
-  4-2-testes-de-integracao-fluxo-app-metricas-dashboards: backlog
-  4-3-fluxo-de-validacao-assistida-por-ui-roteiro-extensao-para-agente: backlog
-  4-4-confirmacao-explicita-de-validacao-pelo-utilizador: backlog
-  4-5-checklist-manual-de-fallback: backlog
-  4-6-comando-validate-e-revalidacao-pos-mudancas: backlog
+  epic-4: done
+  4-1-runner-de-smoke-tests-por-modulo-pods-servicos-up: done
+  4-2-testes-de-integracao-fluxo-app-metricas-dashboards: done
+  4-3-fluxo-de-validacao-assistida-por-ui-roteiro-extensao-para-agente: done
+  4-4-confirmacao-explicita-de-validacao-pelo-utilizador: done
+  4-5-checklist-manual-de-fallback: done
+  4-6-comando-validate-e-revalidacao-pos-mudancas: done
   epic-4-retrospective: optional
 
-  epic-5: backlog
-  5-1-taxonomia-de-falhas-para-operacoes-de-cluster-e-modulos: backlog
-  5-2-selecao-de-rota-de-recuperacao-retry-rollback-diagnostico: backlog
-  5-3-orquestracao-do-fluxo-de-recuperacao-ate-estado-consistente: backlog
-  5-4-confirmacao-pos-recuperacao-com-validacao-renovada: backlog
+  epic-5: done
+  5-1-taxonomia-de-falhas-para-operacoes-de-cluster-e-modulos: done
+  5-2-selecao-de-rota-de-recuperacao-retry-rollback-diagnostico: done
+  5-3-orquestracao-do-fluxo-de-recuperacao-ate-estado-consistente: done
+  5-4-confirmacao-pos-recuperacao-com-validacao-renovada: done
   epic-5-retrospective: optional
 
   epic-6: backlog

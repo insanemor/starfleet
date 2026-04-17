@@ -1,6 +1,7 @@
 import {exec} from 'node:child_process'
 import {promisify} from 'node:util'
 import {ExitCode} from '../errors/exitCodes.js'
+import {classifyExternalFailure, detectSurfaceFromCommand} from '../errors/failureTaxonomy.js'
 import {StarfleetError} from '../errors/StarfleetError.js'
 import {logInfo} from '../logging/logger.js'
 import {readState, writeState} from '../state/index.js'
@@ -57,13 +58,45 @@ async function runShellHooks(
         maxBuffer: 10 * 1024 * 1024,
       })
     } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e)
+      const raw = e as {
+        stderr?: Buffer | string
+        stdout?: Buffer | string
+        message?: string
+        code?: string | number
+        signal?: string
+        killed?: boolean
+        cmd?: string
+      }
+      const stderr = raw.stderr !== undefined ? String(raw.stderr) : ''
+      const stdout = raw.stdout !== undefined ? String(raw.stdout) : ''
+      const msg = [stderr, stdout, raw.message].filter(Boolean).join(' ').trim() || String(e)
+      const surface = detectSurfaceFromCommand(raw.cmd ?? cmd, 'module-hook')
+      const classification = classifyExternalFailure({
+        surface,
+        command: raw.cmd ?? cmd,
+        errno: raw.code,
+        signal: raw.signal,
+        timedOut: raw.killed === true,
+        message: raw.message,
+        stderr,
+        stdout,
+      })
       throw new StarfleetError({
-        code: 'MODULE_HOOK_FAILED',
+        code: classification.code,
         message: `Hook ${phase} falhou no módulo ${moduleId}: ${msg}`,
-        hint: 'Corrija o comando em module.yaml ou defina STARFLEET_MODULE_HOOKS_DRY_RUN=1 para simular em testes.',
+        hint: classification.hint,
         exitCode: ExitCode.module,
-        details: {moduleId, phase, command: cmd},
+        details: {
+          moduleId,
+          phase,
+          command: cmd,
+          surface: classification.surface,
+          category: classification.category,
+          errno: raw.code,
+          signal: raw.signal,
+          stderr: stderr.trim(),
+          stdout: stdout.trim(),
+        },
       })
     }
   }

@@ -30,7 +30,9 @@ Variáveis úteis (testes / automação):
 - `list`
 - `add <module>` (opção `--upgrade` para reexecutar hooks e atualizar pinagem)
 - `remove <module>`
+- `recover` — recuperação guiada após falhas em `up`/`add` com rotas `retry`, `rollback` e `diagnose`
 - `catalog-check` — gate para módulos com `promoted: true` (exige `README.md` e `tests/smoke` no diretório do módulo)
+- `validate` — smoke (`tests/smoke/smoke.yaml`), integração opcional (`tests/integration/run.sh`), checklist manual (`validation-checklist.yaml` com `starfleet validate --manual`), relatório em `.starfleet/validation-report.json`; `--confirm` regista confirmação no estado (em CI não interativa use `--confirm --yes`)
 
 Script npm: `npm run catalog:check` (equivale a `catalog-check`).
 
@@ -62,6 +64,42 @@ Contrato estável (camelCase) — uma linha JSON no **stdout** por execução; c
 
 Em falhas, o exit code segue a mesma matriz que em modo humano (ex.: `2` para manifesto inválido, `1` para erro interno genérico).
 
+## Taxonomia de falhas externas (Epic 5.1)
+
+Para falhas durante `up` e `add` (invocações de `k3d`, `kubectl` e hooks), o campo `error.code` e a linha `code:` usam categorias estáveis:
+
+| `code` | Categoria | Exemplo de origem |
+| --- | --- | --- |
+| `EXTERNAL_BINARY_MISSING` | Binário em falta | `k3d`/`kubectl` não instalado no PATH |
+| `EXTERNAL_TIMEOUT` | Timeout | comando externo excede tempo limite |
+| `EXTERNAL_NETWORK` | Rede | conexão recusada/indisponível ao daemon/API |
+| `EXTERNAL_CONFIG` | Configuração | kubeconfig/contexto/flags/configuração inválida |
+| `EXTERNAL_COMMAND_FAILED` | Falha genérica de comando | comando terminou com erro não classificado |
+
+O `hint` permanece específico por superfície (`k3d`, `kubectl` ou `module-hook`) para orientar a próxima ação com menor ambiguidade.
+
+## Recuperação guiada (`recover`)
+
+Quando uma operação `up` ou `add` falha, o estado local guarda contexto de recuperação:
+
+- `retry`: reexecuta a mesma operação com logs de tentativa numerados (`recover: retry attempt #N`).
+- `rollback`: restaura o snapshot anterior quando disponível.
+- `diagnose`: mostra diagnóstico sem alterar estado.
+
+Exemplos:
+
+```bash
+./bin/dev.js recover
+./bin/dev.js recover --route retry
+./bin/dev.js recover --route rollback --no-validate
+./bin/dev.js recover --route retry --validate --confirm --yes
+```
+
+Pós-recuperação:
+
+- Por omissão, `recover` tenta revalidar (`validate` smoke) após `retry`.
+- Se a validação falhar, o ambiente **não** é marcado como saudável e o comando sugere nova rota (`diagnose`, depois `retry`/`rollback`).
+
 ## Modo não interativo (CI / scripts)
 
 - **Flag:** `--yes` / `-y` — não usa prompts; operações que exigem input explícito falham com erro classificado (tipicamente exit `2`).
@@ -74,17 +112,20 @@ Exemplo: em modo não interativo, `add` exige o argumento do módulo na linha de
 O Starfleet inclui o plugin oficial **`@oclif/plugin-autocomplete`**. Com o projeto compilado (`npm run build`):
 
 1. Gerar/atualizar o cache e ver instruções para o zsh:
+
    ```bash
    ./bin/dev.js autocomplete zsh
    ```
+
 2. Obter o fragmento a colar no `~/.zshrc` (ou executar o `printf`/`source` que o comando mostrar):
+
    ```bash
    ./bin/dev.js autocomplete script zsh
    ```
 
 Se o binário `starfleet` estiver no `PATH` (instalação global ou `npm link`), substitua `./bin/dev.js` por `starfleet`.
 
-Após configurar o shell, o Tab completa os comandos MVP (`up`, `down`, `status`, `list`, `add`, `remove`, `catalog-check`) e o meta-comando `autocomplete`, bem como flags partilhadas (`--output`, `--verbose`, `--yes`, …). O primeiro uso pode demorar um instante enquanto o cache é construído.
+Após configurar o shell, o Tab completa os comandos MVP (`up`, `down`, `status`, `list`, `add`, `remove`, `catalog-check`, `validate`) e o meta-comando `autocomplete`, bem como flags partilhadas (`--output`, `--verbose`, `--yes`, …). O primeiro uso pode demorar um instante enquanto o cache é construído.
 
 ## Qualidade
 

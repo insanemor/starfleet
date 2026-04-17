@@ -45,7 +45,7 @@ describe('K3dRunner', () => {
     expect(logged).toContain('test-cluster')
   })
 
-  it('mapeia falha do subprocesso para StarfleetError CLUSTER_K3D_FAILED', async () => {
+  it('mapeia falha genérica do subprocesso para taxonomia externa', async () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sf-k3d-'))
     tmpDirs.push(dir)
     const logFile = path.join(dir, 'log')
@@ -62,10 +62,30 @@ describe('K3dRunner', () => {
     }
     expect(caught).toBeInstanceOf(StarfleetError)
     const se = caught as StarfleetError
-    expect(se.code).toBe('CLUSTER_K3D_FAILED')
+    expect(se.code).toBe('EXTERNAL_COMMAND_FAILED')
     expect(se.exitCode).toBe(10)
     expect(se.details).toMatchObject({
       command: mockK3d,
+      surface: 'k3d',
+      category: 'command-failed',
+    })
+  })
+
+  it('classifica k3d ausente como binário em falta', async () => {
+    const runner = new K3dRunner({executable: '/tmp/binario-que-nao-existe-k3d'})
+    let caught: unknown
+    try {
+      await runner.clusterCreate(baseSpec)
+    } catch (e) {
+      caught = e
+    }
+    expect(caught).toBeInstanceOf(StarfleetError)
+    const se = caught as StarfleetError
+    expect(se.code).toBe('EXTERNAL_BINARY_MISSING')
+    expect(se.hint).toContain('k3d')
+    expect(se.details).toMatchObject({
+      surface: 'k3d',
+      category: 'binary-missing',
     })
   })
 })
