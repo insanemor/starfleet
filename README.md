@@ -31,6 +31,8 @@ Variáveis úteis (testes / automação):
 - `add <module>` (opção `--upgrade` para reexecutar hooks e atualizar pinagem)
 - `remove <module>`
 - `recover` — recuperação guiada após falhas em `up`/`add` com rotas `retry`, `rollback` e `diagnose`
+- `evidence capture` — gera manifesto JSON de evidências em `.starfleet/evidence/`
+- `evidence report [manifest]` — gera relatório Markdown legível a partir de um manifesto de evidência
 - `catalog-check` — gate para módulos com `promoted: true` (exige `README.md` e `tests/smoke` no diretório do módulo)
 - `validate` — smoke (`tests/smoke/smoke.yaml`), integração opcional (`tests/integration/run.sh`), checklist manual (`validation-checklist.yaml` com `starfleet validate --manual`), relatório em `.starfleet/validation-report.json`; `--confirm` regista confirmação no estado (em CI não interativa use `--confirm --yes`)
 
@@ -100,6 +102,34 @@ Pós-recuperação:
 - Por omissão, `recover` tenta revalidar (`validate` smoke) após `retry`.
 - Se a validação falhar, o ambiente **não** é marcado como saudável e o comando sugere nova rota (`diagnose`, depois `retry`/`rollback`).
 
+## Evidências de lab (`evidence capture` / `evidence report`)
+
+Com o estado local válido, `evidence capture` escreve um manifesto JSON (camelCase) em `.starfleet/evidence/manifest-<timestamp>.json` com:
+
+- `generatedAt` (UTC ISO-8601)
+- `cliVersion` (quando detectada)
+- `sourceRevision` (quando `GIT_COMMIT` estiver definido)
+- `modules` (lista de módulos ativos + versão pinada quando disponível)
+- `configChecksumSha256` opcional para o `starfleet.yaml`
+
+Exemplo:
+
+```bash
+./bin/dev.js evidence capture
+./bin/dev.js evidence capture --output json
+./bin/dev.js evidence report
+./bin/dev.js evidence report --output json
+```
+
+`evidence report` produz um Markdown com secções fixas:
+
+- Contexto
+- Módulos
+- Resultados de validação
+- Links para UIs conhecidas
+
+O relatório não lê conteúdo de `.env` (evita vazamento de segredos).
+
 ## Modo não interativo (CI / scripts)
 
 - **Flag:** `--yes` / `-y` — não usa prompts; operações que exigem input explícito falham com erro classificado (tipicamente exit `2`).
@@ -125,7 +155,7 @@ O Starfleet inclui o plugin oficial **`@oclif/plugin-autocomplete`**. Com o proj
 
 Se o binário `starfleet` estiver no `PATH` (instalação global ou `npm link`), substitua `./bin/dev.js` por `starfleet`.
 
-Após configurar o shell, o Tab completa os comandos MVP (`up`, `down`, `status`, `list`, `add`, `remove`, `catalog-check`, `validate`) e o meta-comando `autocomplete`, bem como flags partilhadas (`--output`, `--verbose`, `--yes`, …). O primeiro uso pode demorar um instante enquanto o cache é construído.
+Após configurar o shell, o Tab completa os comandos MVP (`up`, `down`, `status`, `list`, `add`, `remove`, `catalog-check`, `validate`, `recover`, `evidence capture`, `evidence report`) e o meta-comando `autocomplete`, bem como flags partilhadas (`--output`, `--verbose`, `--yes`, …). O primeiro uso pode demorar um instante enquanto o cache é construído.
 
 ## Qualidade
 

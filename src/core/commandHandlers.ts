@@ -8,6 +8,8 @@ import {mapConfigToK3dSpec} from './cluster/k3dTypes.js'
 import {collectLabStatus} from './cluster/labStatus.js'
 import {tearDownLabCluster} from './cluster/tearDown.js'
 import {loadStarfleetConfig} from './config/index.js'
+import {captureEvidenceManifest} from './evidence/captureEvidence.js'
+import {writeEvidenceMarkdownReport} from './evidence/reportEvidence.js'
 import {formatModuleCatalogHuman, scanModuleCatalog} from './modules/catalog.js'
 import {runCatalogQualityGate} from './modules/catalogGate.js'
 import {applyAddModule, applyProfileModules, applyRemoveModule} from './modules/moduleApply.js'
@@ -34,6 +36,7 @@ export type CommandResult = {
   profileApplyData?: Record<string, unknown>
   validateData?: Record<string, unknown>
   recoverData?: Record<string, unknown>
+  evidenceData?: Record<string, unknown>
 }
 
 function requireConfig(cwd: string): void {
@@ -293,5 +296,23 @@ export async function runRecover(options: {
       route: result.route,
       ...(result.validation ? {validation: result.validation} : {}),
     },
+  }
+}
+
+export async function runEvidenceCapture(options?: {cliVersion?: string}): Promise<CommandResult> {
+  const cwd = process.env.STARFLEET_WORKDIR?.trim() || process.cwd()
+  const result = captureEvidenceManifest(cwd, {cliVersion: options?.cliVersion})
+  return {
+    message: result.message,
+    evidenceData: result.data,
+  }
+}
+
+export async function runEvidenceReport(options?: {manifestPath?: string}): Promise<CommandResult> {
+  const cwd = process.env.STARFLEET_WORKDIR?.trim() || process.cwd()
+  const result = writeEvidenceMarkdownReport(cwd, {manifestPath: options?.manifestPath})
+  return {
+    message: result.message,
+    evidenceData: result.data,
   }
 }

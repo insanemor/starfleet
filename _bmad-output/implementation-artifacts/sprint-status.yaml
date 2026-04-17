@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-16T23:00:00Z
-last_updated: 2026-04-17T12:29:02Z
+last_updated: 2026-04-17T14:38:43Z
 project: starfleet
 project_key: NOKEY
 tracking_system: file-system
@@ -86,10 +86,10 @@ development_status:
   5-4-confirmacao-pos-recuperacao-com-validacao-renovada: done
   epic-5-retrospective: optional
 
-  epic-6: backlog
-  6-1-formato-minimo-de-manifesto-de-evidencia-e-escrita-em-disco: backlog
-  6-2-relatorio-legivel-markdown-derivado-do-manifesto: backlog
-  6-3-rastreabilidade-de-evidencia-a-versao-da-cli-e-do-estado: backlog
+  epic-6: done
+  6-1-formato-minimo-de-manifesto-de-evidencia-e-escrita-em-disco: done
+  6-2-relatorio-legivel-markdown-derivado-do-manifesto: done
+  6-3-rastreabilidade-de-evidencia-a-versao-da-cli-e-do-estado: done
   epic-6-retrospective: optional
 
   epic-7: backlog
