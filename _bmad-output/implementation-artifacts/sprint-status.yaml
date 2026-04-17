@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-16T23:00:00Z
-last_updated: 2026-04-17T14:38:43Z
+last_updated: 2026-04-17T15:22:02Z
 project: starfleet
 project_key: NOKEY
 tracking_system: file-system
@@ -92,8 +92,8 @@ development_status:
   6-3-rastreabilidade-de-evidencia-a-versao-da-cli-e-do-estado: done
   epic-6-retrospective: optional
 
-  epic-7: backlog
-  7-1-scaffold-checklist-para-novo-modulo-alinhado-ao-padrao-starfleet: backlog
-  7-2-verificacoes-de-compatibilidade-e-regressao-em-contribuicoes: backlog
-  7-3-criterios-de-aceitacao-automaticos-para-rejeitar-contribuicoes-invalidas: backlog
+  epic-7: done
+  7-1-scaffold-checklist-para-novo-modulo-alinhado-ao-padrao-starfleet: done
+  7-2-verificacoes-de-compatibilidade-e-regressao-em-contribuicoes: done
+  7-3-criterios-de-aceitacao-automaticos-para-rejeitar-contribuicoes-invalidas: done
   epic-7-retrospective: optional

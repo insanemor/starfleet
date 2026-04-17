@@ -12,7 +12,9 @@ import {captureEvidenceManifest} from './evidence/captureEvidence.js'
 import {writeEvidenceMarkdownReport} from './evidence/reportEvidence.js'
 import {formatModuleCatalogHuman, scanModuleCatalog} from './modules/catalog.js'
 import {runCatalogQualityGate} from './modules/catalogGate.js'
+import {runModulesContributionGate} from './modules/contributionGate.js'
 import {applyAddModule, applyProfileModules, applyRemoveModule} from './modules/moduleApply.js'
+import {scaffoldModule} from './modules/scaffoldModule.js'
 import {
   clearFailedOperation,
   executeRecoveryFlow,
@@ -37,6 +39,8 @@ export type CommandResult = {
   validateData?: Record<string, unknown>
   recoverData?: Record<string, unknown>
   evidenceData?: Record<string, unknown>
+  modulesCheckData?: Record<string, unknown>
+  moduleScaffoldData?: Record<string, unknown>
 }
 
 function requireConfig(cwd: string): void {
@@ -245,6 +249,28 @@ export async function runCatalogCheck(): Promise<CommandResult> {
   const cwd = process.env.STARFLEET_WORKDIR?.trim() || process.cwd()
   const r = runCatalogQualityGate(cwd)
   return {message: r.message, catalogCheckData: {promotedChecked: r.promotedChecked, ok: true}}
+}
+
+export async function runModulesCheck(): Promise<CommandResult> {
+  const cwd = process.env.STARFLEET_WORKDIR?.trim() || process.cwd()
+  const r = runModulesContributionGate(cwd)
+  return {
+    message: r.message,
+    modulesCheckData: {checked: r.checked, ok: true},
+  }
+}
+
+export async function runModuleScaffold(options: {module: string}): Promise<CommandResult> {
+  const cwd = process.env.STARFLEET_WORKDIR?.trim() || process.cwd()
+  const r = scaffoldModule(cwd, options.module)
+  return {
+    message: r.message,
+    moduleScaffoldData: {
+      module: r.moduleId,
+      path: r.modulePath,
+      created: r.created,
+    },
+  }
 }
 
 export async function runValidate(options: {

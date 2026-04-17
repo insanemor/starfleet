@@ -34,9 +34,15 @@ Variáveis úteis (testes / automação):
 - `evidence capture` — gera manifesto JSON de evidências em `.starfleet/evidence/`
 - `evidence report [manifest]` — gera relatório Markdown legível a partir de um manifesto de evidência
 - `catalog-check` — gate para módulos com `promoted: true` (exige `README.md` e `tests/smoke` no diretório do módulo)
+- `check-modules` — gate de mantenedor para contribuições (`README.md`, `iac/`, `tests/smoke/smoke.yaml` válido)
 - `validate` — smoke (`tests/smoke/smoke.yaml`), integração opcional (`tests/integration/run.sh`), checklist manual (`validation-checklist.yaml` com `starfleet validate --manual`), relatório em `.starfleet/validation-report.json`; `--confirm` regista confirmação no estado (em CI não interativa use `--confirm --yes`)
+- `module scaffold <nome>` — cria template mínimo de módulo alinhado ao padrão Starfleet
 
-Script npm: `npm run catalog:check` (equivale a `catalog-check`).
+Scripts npm:
+
+- `npm run catalog:check` (equivale a `catalog-check`)
+- `npm run check:modules` (equivale a `check-modules`)
+- `npm run module:scaffold -- <nome>` (equivale a `module scaffold <nome>`)
 
 `list` lê pastas `modules/<nome>/` no diretório de trabalho (`STARFLEET_WORKDIR` ou cwd), carrega `module.yaml` com `apiVersion: starfleet/module/v1` e mostra nome, descrição, dependências e versão sugerida. Entradas inválidas (YAML/schema ou `module.yaml` em falta) aparecem na lista marcadas como **inválido**, com mensagem e dica — não são omitidas silenciosamente.
 
@@ -155,7 +161,7 @@ O Starfleet inclui o plugin oficial **`@oclif/plugin-autocomplete`**. Com o proj
 
 Se o binário `starfleet` estiver no `PATH` (instalação global ou `npm link`), substitua `./bin/dev.js` por `starfleet`.
 
-Após configurar o shell, o Tab completa os comandos MVP (`up`, `down`, `status`, `list`, `add`, `remove`, `catalog-check`, `validate`, `recover`, `evidence capture`, `evidence report`) e o meta-comando `autocomplete`, bem como flags partilhadas (`--output`, `--verbose`, `--yes`, …). O primeiro uso pode demorar um instante enquanto o cache é construído.
+Após configurar o shell, o Tab completa os comandos MVP (`up`, `down`, `status`, `list`, `add`, `remove`, `catalog-check`, `check-modules`, `validate`, `recover`, `evidence capture`, `evidence report`, `module scaffold`) e o meta-comando `autocomplete`, bem como flags partilhadas (`--output`, `--verbose`, `--yes`, …). O primeiro uso pode demorar um instante enquanto o cache é construído.
 
 ## Qualidade
 

@@ -23,3 +23,5 @@ export {
   listActiveDependents,
 } from './moduleApply.js'
 export {runCatalogQualityGate} from './catalogGate.js'
+export {runModulesContributionGate} from './contributionGate.js'
+export {scaffoldModule} from './scaffoldModule.js'
